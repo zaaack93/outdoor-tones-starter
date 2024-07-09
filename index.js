@@ -1,8 +1,9 @@
 class App{
 
     constructor(){
+        this.heroImages=[...document.querySelectorAll('.hero__images img')];
         this._initialise();
-        this._render();   
+        this._render();
     }
 
 
@@ -53,6 +54,25 @@ class App{
             lerp:0.5,
         })
 
+    }
+
+    _createHero(){
+        const tl = gsap.timeline({
+            scrollTrigger:{
+                trigger:'.hero',
+                start:'top top',
+                end:'bottom top',
+                scrub:true,
+                markers:true
+            }
+        });
+
+        this.heroImages.forEach((img,index)=>{
+            tl.to(img,{
+                ease: "none",
+                yPercent: gsap.utils.random(-100,-50),
+            },0)
+        })
     }
 
     _render(time){
