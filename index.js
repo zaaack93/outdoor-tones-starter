@@ -2,6 +2,7 @@ class App{
 
     constructor(){
         this.heroImages=[...document.querySelectorAll('.hero__images img')];
+        this.text__effects=[...document.querySelectorAll('.text__effect')];
         this._initialise();
         this._render();
     }
@@ -12,6 +13,8 @@ class App{
         this._createLines();
         this._initIntro();
         this._createHero();
+        this._createEffects();
+        this._createPinned();
     }
 
     _setInitialStates(){
@@ -73,6 +76,61 @@ class App{
                 yPercent: gsap.utils.random(-100,-50),
             },0)
         })
+    }
+
+    _createEffects(){
+        const tl = gsap.timeline(
+            {scrollTrigger:{
+            trigger:'.text-block',
+            start:'top center-=40%',
+            end:'bottom top',
+            scrub:true,
+            markers:true
+        }});
+
+        this.text__effects.forEach((effect,index)=>{
+            const overlay= effect.querySelector('.text__overlay');
+            const text = effect.querySelector('p');
+            tl.to(overlay,{
+                scaleX:0,
+                duration:3
+            }).to(text,{
+                y:0,
+                opacity:1,
+                duration:1,
+                ease:'expo.out',
+                delay:()=>index * 0.1
+            },0)
+        });
+    }
+
+    _createPinned(){
+        const tl = gsap.timeline({
+            scrollTrigger:{
+                trigger:'.fullwidth-image',
+                start:'top top',
+                end:'=1500',
+                scrub:true,
+                pin:true,
+                markers:true
+            }
+        });
+
+        tl.to('.fullwidth-image__overlay',{
+            opacity:0.3,
+        }).to('.fullwidth-image',{
+            ease:'expo.out',
+            "clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
+        }).
+        to('.fullwidth-image img',{
+            scale:1,
+            duration:1
+        }).
+        to('.fullwidth-image__text',{
+            y:0,
+            opacity:1,
+            duration:1
+        },0)
     }
 
     _render(time){
